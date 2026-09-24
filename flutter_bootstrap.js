@@ -43,6 +43,11 @@ _flutter.buildConfig = {"engineRevision":"af7e796e161ae0bb1ff0758c71a7105418bd9d
 
 // Niente risorse da internet: CanvasKit è incluso nella build (--no-web-resources-cdn) e i font
 // di riserva non vengono scaricati da Google (il percorso è locale e non contiene nulla).
+// Anche il codice dell'app si chiede con l'indirizzo di questa apertura (vedi index.html).
+for (const build of _flutter.buildConfig.builds) {
+  if (build.mainJsPath) build.mainJsPath += "?v=" + (window.vaultlyLoadVersion || Date.now());
+}
+
 // Copia locale dei file dell'app, per aprirla anche senza internet (vedi sw.js).
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(() => {});

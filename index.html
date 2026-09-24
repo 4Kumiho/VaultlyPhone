@@ -31,7 +31,21 @@
 </head>
 <body>
   <div id="splash"><img src="icons/Icon-192.png" alt=""></div>
-  <script src="device_key.js"></script>
-  <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // A ogni apertura i file dell'app si chiedono con un indirizzo nuovo ("?v=..."): così il
+    // browser non riusa una copia vecchia e gli aggiornamenti arrivano subito. Il service worker
+    // li salva senza "?v", per aprire l'app anche senza internet.
+    (function () {
+      var version = String(Date.now());
+      window.vaultlyLoadVersion = version;
+      function load(src, next) {
+        var script = document.createElement("script");
+        script.src = src + "?v=" + version;
+        if (next) { script.onload = next; script.onerror = next; }
+        document.body.appendChild(script);
+      }
+      load("device_key.js", function () { load("flutter_bootstrap.js"); });
+    })();
+  </script>
 </body>
 </html>
