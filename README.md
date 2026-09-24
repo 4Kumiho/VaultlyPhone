@@ -10,9 +10,14 @@
 </p>
 
 <p align="center">
-  <a href="https://4kumiho.github.io/VaultlyPhone/"><img src="docs/images/qr.png" width="200" alt="Codice QR per aprire Vaultly"></a><br>
-  <sub>Inquadra il codice con la fotocamera del telefono per aprire Vaultly</sub>
+  <a href="https://4kumiho.github.io/VaultlyPhone/"><img src="docs/images/qr.png" width="200" alt="Codice QR per aprire Vaultly"></a>
 </p>
+
+> **Come aprire Vaultly sul telefono**
+> - **Stai leggendo questa pagina sul PC?** Apri la **Fotocamera** del telefono, inquadra il codice QR qui sopra sullo schermo del PC e tocca il link che compare (**4kumiho.github.io**).
+> - **Stai leggendo questa pagina sul telefono?** Il QR non serve: tocca il link blu **📱 Apri Vaultly** qui sopra.
+>
+> Poi segui i passaggi di [installazione su iPhone](#installazione-su-iphone) o [su Android](#installazione-su-android).
 
 <p align="center">
   <img src="docs/images/dashboard.png" width="240" alt="Conti e saldo">
@@ -59,15 +64,22 @@ Due funzioni dell'iPhone, non di Vaultly, possono però portare qualcosa fuori d
 
 **Serve:** un iPhone e **Safari**. Da altri browser su iPhone non si può aggiungere l'app alla schermata Home nel modo giusto.
 
-1. Apri Vaultly in **Safari**: inquadra con la **Fotocamera** il codice QR qui sotto e tocca il link che compare, oppure scrivi **4kumiho.github.io/VaultlyPhone** (con V e P maiuscole).
-   Deve comparire la schermata scura di Vaultly con la scritta **"Bentornato"**. Se vedi la pagina bianca di GitHub, con file e testo, sei sulla pagina del codice: da lì l'icona aprirebbe GitHub, non l'app.
+1. **Apri Vaultly in Safari**, in uno di questi tre modi:
+   - **dal PC**: apri questa pagina sul computer, poi sull'iPhone apri la **Fotocamera**, inquadra il codice QR qui sotto e tocca la scritta gialla **4kumiho.github.io** che compare;
+   - **dall'iPhone**: se stai leggendo questa pagina sull'iPhone, tocca il link blu [📱 Apri Vaultly](https://4kumiho.github.io/VaultlyPhone/);
+   - **a mano**: in Safari tocca la barra degli indirizzi, cancella tutto e scrivi **4kumiho.github.io/VaultlyPhone**, con V e P maiuscole.
 
    <img src="docs/images/qr.png" width="160" alt="Codice QR per aprire Vaultly">
+
+   **Controlla di essere sulla pagina giusta** prima di andare avanti:
+   - ✅ schermata **scura** con il logo di Vaultly e la scritta **"Bentornato"**: è quella giusta;
+   - ❌ pagina **bianca di GitHub**, con file e testo, come questa: è la pagina del codice. Se aggiungi quella alla schermata Home, l'icona apre GitHub e non l'app.
 
 2. Tocca **•••** in basso a destra e poi **Condividi**. Sugli iPhone meno recenti tocca direttamente il pulsante Condividi, il quadrato con la freccia verso l'alto.
 3. Nel pannello che si apre **scorri verso il basso** oltre le icone delle app e tocca **Aggiungi alla schermata Home**. Se non c'è, tocca **Modifica azioni…** in fondo all'elenco e aggiungila con il **+** verde.
    Se compare l'opzione **Apri come app web**, lasciala attiva.
 4. Tocca **Aggiungi**. Sulla schermata Home compare l'icona di **Vaultly**.
+   Nella finestra di aggiunta, sotto il nome, l'iPhone mostra solo **4kumiho.github.io** e non l'indirizzo completo: è normale, l'icona apre comunque Vaultly. Se invece c'è scritto **github.com**, sei sulla pagina sbagliata: torna al punto 1.
 5. **Apri Vaultly sempre da quell'icona**, non da Safari. L'app a schermo intero e la pagina in Safari hanno memorie separate: i dati che inserisci nell'app li trovi solo aprendola dall'icona.
 
 La prima apertura richiede internet, per scaricare l'app. Dopo funziona anche in aereo o senza campo.
