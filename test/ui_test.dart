@@ -14,6 +14,7 @@ import 'package:vaultly_phone/ui/account_screen.dart';
 import 'package:vaultly_phone/ui/app_shell.dart';
 import 'package:vaultly_phone/ui/avatar.dart';
 import 'package:vaultly_phone/ui/home_screen.dart';
+import 'package:vaultly_phone/ui/privacy_screen.dart';
 import 'package:vaultly_phone/ui/sheets/account_sheet.dart';
 import 'package:vaultly_phone/ui/sheets/profile_sheet.dart';
 import 'package:vaultly_phone/ui/sheets/tag_detail_sheet.dart';
@@ -129,6 +130,15 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('pagina I tuoi dati', (tester) async {
+    await pump(tester, const PrivacyScreen());
+    expect(find.text('I tuoi dati restano sul tuo telefono'), findsOneWidget);
+    await tester.drag(find.byType(ListView), const Offset(0, -3000));
+    await tester.pumpAndSettle();
+    expect(find.text('Cosa devi sapere'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('pannelli', (tester) async {
     await tester.runAsync(withData);
     final account = data.accounts.single;
@@ -213,7 +223,10 @@ void pinFlow() {
     await tester.tap(find.text('Esci'));
     await settle();
 
-    // Un solo utente con il codice: si va dritti al tastierino.
+    // Dopo "Esci": scelta dell'utente, poi il tastierino.
+    expect(find.text('Chi sei?'), findsOneWidget);
+    await tester.tap(find.text('giulia'));
+    await tester.pumpAndSettle();
     expect(find.text('Ciao, giulia'), findsOneWidget);
     await typePin('111222');
     expect(find.textContaining('Restano 4 tentativi'), findsOneWidget);

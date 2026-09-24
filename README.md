@@ -32,6 +32,8 @@
 6. **Ognuno vede solo i suoi dati.** Se sullo stesso telefono ci sono più utenti, ciascuno ha la sua password e i suoi dati cifrati con la sua chiave.
 7. **Il codice di 6 cifre vale solo su questo telefono.** Per aprire i dati il codice da solo non basta: serve anche una **chiave del dispositivo** creata dal browser. Il browser la custodisce e **non permette a nessuno di leggerla o copiarla**, nemmeno all'app. Dopo **5 codici sbagliati** il codice si disattiva e serve la password.
 
+Tutto questo è spiegato anche dentro l'app, in **Altro → I tuoi dati → Maggiori informazioni**.
+
 ### Cosa devi sapere
 
 - **Non c'è recupero password e non c'è backup online.** È il prezzo della sicurezza: se dimentichi la password, i dati non si possono più aprire, neanche da chi ha fatto l'app. Se elimini l'icona di Vaultly o cambi telefono, i dati spariscono con lei.
@@ -142,8 +144,10 @@ Email e telefono restano nel tuo profilo, cifrati, e li puoi cambiare da **Altro
 
 Subito dopo, Vaultly ti chiede un **codice di 6 cifre**, da scrivere due volte. Non sono ammessi codici troppo facili come 111111 o 123456. **Da quel momento** all'apertura:
 
-1. scegli il tuo utente, oppure, se sul telefono ci sei solo tu, arrivi direttamente al tastierino;
+1. scegli il tuo utente nella schermata **Chi sei?**;
 2. inserisci il codice e sei dentro.
+
+Anche quando tocchi **Altro → Esci** torni alla schermata **Chi sei?**.
 
 - **Hai dimenticato il codice?** Tocca **Ho dimenticato il codice · usa la password**: entri con la password e poi ne crei uno nuovo.
 - **Dopo 5 codici sbagliati** il codice si disattiva: accedi con la password e creane uno nuovo.

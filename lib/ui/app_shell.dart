@@ -38,7 +38,7 @@ class _AppShellState extends State<AppShell> {
     _start();
   }
 
-  /// Schermata iniziale: nessun utente → registrazione; uno solo col codice → codice; altrimenti scelta.
+  /// Schermata iniziale (anche dopo "Esci"): nessun utente → registrazione; altrimenti scelta dell'utente.
   Future<void> _start() async {
     final users = await _auth.users();
     if (!mounted) return;
@@ -49,9 +49,6 @@ class _AppShellState extends State<AppShell> {
       _notice = null;
       if (users.isEmpty) {
         _showPassword(register: true);
-      } else if (users.length == 1 && users.single.hasPin) {
-        _user = users.single;
-        _stage = _Stage.pin;
       } else {
         _stage = _Stage.users;
       }

@@ -5,6 +5,7 @@ import '../core/app_data.dart';
 import '../main.dart';
 import 'account_screen.dart';
 import 'avatar.dart';
+import 'privacy_screen.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
@@ -42,20 +43,30 @@ class MoreTab extends StatelessWidget {
             ]),
           ),
           const SizedBox(height: 12),
-          const VCard(
+          VCard(
+            onTap: () => PrivacyScreen.open(context),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
+              const Row(children: [
                 Icon(Icons.shield_outlined, color: VColors.positive, size: 20),
                 SizedBox(width: 8),
                 Text('I tuoi dati', style: TextStyle(fontWeight: FontWeight.w600)),
               ]),
-              SizedBox(height: 8),
-              Muted(
+              const SizedBox(height: 8),
+              const Muted(
                 'Profilo, foto, conti, movimenti, etichette e password restano solo su questo telefono, cifrati con '
                 'la tua password di accesso. Vaultly non li invia mai su internet.\n\n'
                 'Se elimini l\'app dalla schermata Home o cancelli i dati di Safari per questo sito, i dati '
                 'vengono cancellati.',
               ),
+              const SizedBox(height: 12),
+              const Row(children: [
+                Flexible(
+                  child: Text('Maggiori informazioni',
+                      style: TextStyle(color: VColors.accentLight, fontWeight: FontWeight.w600)),
+                ),
+                SizedBox(width: 4),
+                Icon(Icons.chevron_right, color: VColors.accentLight, size: 20),
+              ]),
             ]),
           ),
           const SizedBox(height: 20),
