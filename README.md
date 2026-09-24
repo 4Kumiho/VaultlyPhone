@@ -55,8 +55,9 @@ Due funzioni dell'iPhone, non di Vaultly, possono però portare qualcosa fuori d
 **Serve:** un iPhone e **Safari**. Da altri browser su iPhone non si può aggiungere l'app alla schermata Home nel modo giusto.
 
 1. Apri **Safari** e vai su **https://4kumiho.github.io/VaultlyPhone/**
-2. Tocca il pulsante **Condividi** (il quadrato con la freccia verso l'alto). Sugli iPhone più recenti è nel menu **•••** in basso.
-3. Scorri e tocca **Aggiungi alla schermata Home**. Se compare l'opzione **Apri come app web**, lasciala attiva.
+2. Tocca **•••** in basso a destra e poi **Condividi**. Sugli iPhone meno recenti tocca direttamente il pulsante Condividi, il quadrato con la freccia verso l'alto.
+3. Nel pannello che si apre **scorri verso il basso** oltre le icone delle app e tocca **Aggiungi alla schermata Home**. Se non c'è, tocca **Modifica azioni…** in fondo all'elenco e aggiungila con il **+** verde.
+   Se compare l'opzione **Apri come app web**, lasciala attiva.
 4. Tocca **Aggiungi**. Sulla schermata Home compare l'icona di **Vaultly**.
 5. **Apri Vaultly sempre da quell'icona**, non da Safari. L'app a schermo intero e la pagina in Safari hanno memorie separate: i dati che inserisci nell'app li trovi solo aprendola dall'icona.
 
