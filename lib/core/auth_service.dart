@@ -1,4 +1,5 @@
 import '../data/crypto.dart';
+import '../data/device_keys.dart';
 import '../data/local_store.dart';
 import 'countries.dart';
 import 'models.dart';
@@ -12,10 +13,13 @@ class Session {
 }
 
 class AuthResult {
-  AuthResult.ok(this.session) : error = null;
-  AuthResult.fail(this.error) : session = null;
+  AuthResult.ok(this.session)
+      : error = null,
+        pinDisabled = false;
+  AuthResult.fail(this.error, {this.pinDisabled = false}) : session = null;
   final Session? session;
   final String? error;
+  final bool pinDisabled; // il codice non vale più: serve la password
 }
 
 /// Email ripulita, o null se non valida.
@@ -45,13 +49,16 @@ const phoneError = 'Inserisci un numero di telefono valido, es. 333 1234567.';
 /// Registrazione e accesso. Stesse regole del desktop (AuthService), più email e telefono
 /// obbligatori alla registrazione (salvati nel profilo, dentro i dati cifrati).
 class AuthService {
-  AuthService(this._store, this._crypto);
+  AuthService(this._store, this._crypto, [DeviceKeys? device]) : _device = device ?? DeviceKeys();
 
   static const minPasswordLength = 6;
+  static const pinLength = 6;
+  static const maxPinFailures = 5;
   static const _saltBytes = 16;
 
   final LocalStore _store;
   final VaultCrypto _crypto;
+  final DeviceKeys _device;
 
   Future<AuthResult> register({
     required String username,
@@ -103,6 +110,94 @@ class AuthService {
     final stored = user.data;
     final json = stored == null ? null : await crypto.decryptJson(key, stored);
     if (json == null) return AuthResult.fail('I dati di questo utente non sono leggibili.');
+    if (user.pinFailures != 0) {
+      user.pinFailures = 0;
+      await _store.savePin(user);
+    }
+    return AuthResult.ok(Session(user, key, UserData.fromJson(json)));
+  }
+
+  // ---- Codice di sicurezza -------------------------------------------------------------
+  //
+  // La chiave dei dati viene cifrata con una chiave ricavata dal codice (PBKDF2, come la
+  // password) e poi con la chiave del dispositivo, che il browser non lascia copiare: i codici
+  // si possono provare solo da questo telefono, e dopo `maxPinFailures` errori il codice si
+  // disattiva e serve la password.
+
+  /// Tutti gli utenti di questo telefono (solo username e se hanno il codice).
+  Future<List<UserRecord>> users() => _store.users();
+
+  /// Motivo per cui il codice non va bene, o null.
+  static String? pinProblem(String pin) {
+    if (!RegExp('^[0-9]{$pinLength}\$').hasMatch(pin)) return 'Il codice deve avere $pinLength cifre.';
+    if (pin.split('').toSet().length == 1) return 'Troppo facile: non usare la stessa cifra ripetuta.';
+    const up = '0123456789012345', down = '9876543210987654'; // anche 890123, 210987...
+    if (up.contains(pin) || down.contains(pin)) return 'Troppo facile: non usare cifre in fila come 123456.';
+    return null;
+  }
+
+  static String _deviceId(UserRecord user) => 'user-${user.id}';
+
+  /// Attiva (o cambia) il codice per l'utente della sessione.
+  Future<String?> setPin(Session session, String pin, String confirm) async {
+    final problem = pinProblem(pin);
+    if (problem != null) return problem;
+    if (pin != confirm) return 'I due codici non coincidono.';
+    final user = session.user;
+    final crypto = VaultCrypto(iterations: user.iterations);
+    final salt = crypto.randomBytes(_saltBytes);
+    final inner = await crypto.encrypt(await crypto.deriveKey(pin, salt), session.key);
+    final blob = await _device.encrypt(_deviceId(user), inner);
+    user
+      ..pinSalt = salt
+      ..pinBlob = blob
+      ..pinFailures = 0;
+    await _store.savePin(user);
+    return null;
+  }
+
+  Future<void> removePin(UserRecord user) async {
+    await _device.remove(_deviceId(user));
+    user
+      ..pinSalt = null
+      ..pinBlob = null
+      ..pinFailures = 0;
+    await _store.savePin(user);
+  }
+
+  Future<AuthResult> unlockWithPin(String username, String pin) async {
+    final user = await _store.findUser(username);
+    if (user == null || !user.hasPin) {
+      return AuthResult.fail('Il codice non è attivo per questo utente: accedi con la password.', pinDisabled: true);
+    }
+    final inner = await _device.decrypt(_deviceId(user), user.pinBlob!);
+    if (inner == null) {
+      await removePin(user);
+      return AuthResult.fail('Il codice non è più valido su questo telefono: accedi con la password.', pinDisabled: true);
+    }
+    final crypto = VaultCrypto(iterations: user.iterations);
+    final key = pinProblem(pin) == null ? await crypto.decrypt(await crypto.deriveKey(pin, user.pinSalt!), inner) : null;
+    if (key == null) {
+      user.pinFailures++;
+      if (user.pinFailures >= maxPinFailures) {
+        await removePin(user);
+        return AuthResult.fail(
+            'Codice sbagliato $maxPinFailures volte: per sicurezza il codice è stato disattivato. '
+            'Accedi con la password.',
+            pinDisabled: true);
+      }
+      await _store.savePin(user);
+      final left = maxPinFailures - user.pinFailures;
+      return AuthResult.fail(left == 1
+          ? 'Codice errato. Ultimo tentativo, poi servirà la password.'
+          : 'Codice errato. Restano $left tentativi.');
+    }
+    final json = user.data == null ? null : await crypto.decryptJson(key, user.data!);
+    if (json == null) return AuthResult.fail('I dati di questo utente non sono leggibili.');
+    if (user.pinFailures != 0) {
+      user.pinFailures = 0;
+      await _store.savePin(user);
+    }
     return AuthResult.ok(Session(user, key, UserData.fromJson(json)));
   }
 

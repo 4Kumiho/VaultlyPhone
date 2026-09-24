@@ -13,6 +13,9 @@ class UserRecord {
     required this.iterations,
     required this.createdAt,
     this.data,
+    this.pinSalt,
+    this.pinBlob,
+    this.pinFailures = 0,
   });
 
   int id;
@@ -24,6 +27,13 @@ class UserRecord {
   final DateTime createdAt;
   List<int>? data;
 
+  /// Codice di sicurezza: chiave dei dati cifrata col codice e poi con la chiave del dispositivo.
+  List<int>? pinSalt;
+  List<int>? pinBlob;
+  int pinFailures; // codici sbagliati di fila
+
+  bool get hasPin => pinBlob != null;
+
   Map<String, Object?> toMap() => {
         'username': username,
         'usernameLower': username.toLowerCase(),
@@ -33,6 +43,9 @@ class UserRecord {
         'iterations': iterations,
         'createdAt': createdAt.toIso8601String(),
         'data': data,
+        'pinSalt': pinSalt,
+        'pinBlob': pinBlob,
+        'pinFailures': pinFailures,
       };
 
   factory UserRecord.fromMap(int id, Map<String, Object?> m) => UserRecord(
@@ -44,6 +57,9 @@ class UserRecord {
         iterations: m['iterations'] as int,
         createdAt: DateTime.parse(m['createdAt'] as String),
         data: (m['data'] as List?)?.cast<int>(),
+        pinSalt: (m['pinSalt'] as List?)?.cast<int>(),
+        pinBlob: (m['pinBlob'] as List?)?.cast<int>(),
+        pinFailures: (m['pinFailures'] as int?) ?? 0,
       );
 }
 
@@ -70,6 +86,18 @@ class LocalStore {
   }
 
   Future<int> addUser(UserRecord user) => _users.add(_db, user.toMap());
+
+  /// Tutti gli utenti di questo telefono, in ordine di creazione.
+  Future<List<UserRecord>> users() async {
+    final records = await _users.find(_db, finder: Finder(sortOrders: [SortOrder(Field.key)]));
+    return [for (final r in records) UserRecord.fromMap(r.key, r.value)];
+  }
+
+  Future<void> savePin(UserRecord user) => _users.record(user.id).update(_db, {
+        'pinSalt': user.pinSalt,
+        'pinBlob': user.pinBlob,
+        'pinFailures': user.pinFailures,
+      });
 
   Future<void> saveData(int userId, List<int> data) =>
       _users.record(userId).update(_db, {'data': data});

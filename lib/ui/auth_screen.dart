@@ -6,25 +6,37 @@ import 'theme.dart';
 import 'phone_field.dart';
 import 'widgets.dart';
 
-/// Accesso e registrazione, nella stessa schermata.
+/// Accesso con password e registrazione, nella stessa schermata.
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key, required this.auth, required this.onSession});
+  const AuthScreen({
+    super.key,
+    required this.auth,
+    required this.onSession,
+    this.initialUsername = '',
+    this.startRegistering = false,
+    this.notice,
+    this.onBack,
+  });
 
   final AuthService auth;
   final ValueChanged<Session> onSession;
+  final String initialUsername;
+  final bool startRegistering;
+  final String? notice; // es. "codice disattivato: accedi con la password"
+  final VoidCallback? onBack; // torna alla scelta dell'utente
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  final _username = TextEditingController();
+  late final _username = TextEditingController(text: widget.initialUsername);
   final _email = TextEditingController();
   final _phone = TextEditingController();
   String _phoneCountry = 'IT';
   final _password = TextEditingController();
   final _confirm = TextEditingController();
-  bool _registering = false;
+  late bool _registering = widget.startRegistering;
   bool _busy = false;
   String? _error;
 
@@ -91,8 +103,19 @@ class _AuthScreenState extends State<AuthScreen> {
                       const SizedBox(width: 12),
                       const Text('VAULTLY',
                           style: TextStyle(color: VColors.accent, fontWeight: FontWeight.w700, fontSize: 16, letterSpacing: 1)),
+                      const Spacer(),
+                      if (widget.onBack != null)
+                        TextButton.icon(
+                          onPressed: widget.onBack,
+                          icon: const Icon(Icons.people_outline, size: 18),
+                          label: const Text('Utenti'),
+                        ),
                     ]),
                     const SizedBox(height: 28),
+                    if (widget.notice != null) ...[
+                      NoticeBox(widget.notice!),
+                      const SizedBox(height: 18),
+                    ],
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 250),
                       layoutBuilder: (current, previous) =>
@@ -179,7 +202,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           : Text(_registering ? 'Crea account' : 'Accedi'),
                     ),
                     const SizedBox(height: 12),
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Wrap(alignment: WrapAlignment.center, crossAxisAlignment: WrapCrossAlignment.center, children: [
                       Muted(_registering ? 'Hai già un account?' : 'Non hai un account?'),
                       TextButton(onPressed: _toggle, child: Text(_registering ? 'Accedi' : 'Registrati')),
                     ]),

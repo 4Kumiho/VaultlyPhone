@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../core/app_data.dart';
 import '../main.dart';
+import 'lock_screens.dart';
 import 'phone_field.dart';
 import 'sheets/profile_sheet.dart';
 import 'theme.dart';
@@ -63,6 +64,32 @@ class MoreTab extends StatelessWidget {
                 ]),
               ),
               const Icon(Icons.chevron_right, color: VColors.faint),
+            ]),
+          ),
+          const SizedBox(height: 12),
+          VCard(
+            onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
+              fullscreenDialog: true,
+              builder: (route) => PinSetupScreen(
+                save: data.changePin,
+                onCancel: () => Navigator.pop(route),
+                onDone: () {
+                  Navigator.pop(route);
+                  showToast(context, 'Codice di sicurezza cambiato.');
+                },
+              ),
+            )),
+            child: const Row(children: [
+              Icon(Icons.dialpad, color: VColors.accentLight, size: 20),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('Codice di sicurezza', style: TextStyle(fontWeight: FontWeight.w600)),
+                  SizedBox(height: 2),
+                  Muted('Cambia il codice di 6 cifre con cui entri.', size: 12.5),
+                ]),
+              ),
+              Icon(Icons.chevron_right, color: VColors.faint),
             ]),
           ),
           const SizedBox(height: 12),

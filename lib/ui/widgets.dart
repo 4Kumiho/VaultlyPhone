@@ -239,3 +239,24 @@ void showToast(BuildContext context, String message, {String? tone}) {
           )),
     ));
 }
+
+/// Avviso informativo (non un errore), es. "codice disattivato".
+class NoticeBox extends StatelessWidget {
+  const NoticeBox(this.text, {super.key});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: VColors.accent.withValues(alpha: 0.1),
+          border: Border.all(color: VColors.accent.withValues(alpha: 0.35)),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Icon(Icons.info_outline, color: VColors.accentLight, size: 19),
+          const SizedBox(width: 10),
+          Expanded(child: Text(text, style: const TextStyle(color: VColors.text, fontSize: 13.5, height: 1.35))),
+        ]),
+      );
+}

@@ -25,6 +25,7 @@ Versione per telefono di [Vaultly](../Vaultly) (app desktop Qt): conti, moviment
 ## Funzioni (allineate al desktop)
 
 1. Registrazione / accesso (più utenti sullo stesso telefono, ognuno con i suoi dati cifrati). Alla registrazione anche email e telefono (prefisso scelto dall'elenco dei paesi con bandiera: `lib/core/countries.dart` generato da phonenumbers + CLDR, bandiere dal pacchetto `country_flags`, incluse nell'app). Nessun recupero password: non c'è server.
+   Dopo il primo accesso con password si crea un **codice di 6 cifre** (ripetuto); poi all'apertura: scelta dell'utente → codice. La chiave dei dati è cifrata con PBKDF2(codice) e poi con una chiave AES **non estraibile** del browser (`web/device_key.js`, IndexedDB `vaultly-device`): i codici si possono provare solo dal telefono; dopo 5 errori il codice si disattiva e serve la password.
 2. Conti con valuta e saldo iniziale modificabile; eliminazione con conferma.
 3. Movimenti (entrata/uscita, categoria dalla lista fissa, data e ora, descrizione, etichette).
 4. Grafico del saldo con periodi 1G/1S/1M/6M/1A/Tutto.

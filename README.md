@@ -30,6 +30,7 @@
    - **zero** richieste verso altri siti, **zero** dati inviati;
    - nella memoria del telefono nessuno dei dati inseriti (nomi dei conti, importi, email, telefono, password) compare in chiaro.
 6. **Ognuno vede solo i suoi dati.** Se sullo stesso telefono ci sono più utenti, ciascuno ha la sua password e i suoi dati cifrati con la sua chiave.
+7. **Il codice di 6 cifre vale solo su questo telefono.** Per aprire i dati il codice da solo non basta: serve anche una **chiave del dispositivo** creata dal browser. Il browser la custodisce e **non permette a nessuno di leggerla o copiarla**, nemmeno all'app. Dopo **5 codici sbagliati** il codice si disattiva e serve la password.
 
 ### Cosa devi sapere
 
@@ -71,7 +72,8 @@
   - **Ricorrenti**, per esempio *"autostrada"*. Ricominciano da zero ogni giorno, ogni N giorni, ogni settimana, ogni mese o ogni anno. Per ognuna vedi quanto hai speso nei periodi precedenti, con grafico e media.
   - Per ogni etichetta puoi mettere un **tetto di spesa**. Vaultly ti avvisa quando arrivi all'80% e quando lo superi.
 - **Password**: login e password dei tuoi account, cifrati, con un generatore di password sicure. Quando copi una password, Vaultly prova a cancellarla dagli appunti dopo 30 secondi.
-- **Più persone sullo stesso telefono**: ognuno ha il suo utente e vede solo i suoi dati.
+- **Accesso veloce con un codice di 6 cifre**: la password serve solo la prima volta. Poi scegli il tuo utente e inserisci il codice.
+- **Più persone sullo stesso telefono**: ognuno ha il suo utente, il suo codice e vede solo i suoi dati.
 - **Funziona senza internet**: basta averla aperta una volta con la connessione.
 
 ---
@@ -131,11 +133,27 @@ Tocca **Registrati** e compila i campi:
 
 Email e telefono restano nel tuo profilo, cifrati, e li puoi cambiare da **Altro → Contatti**. Non vengono usati per recuperare la password: non c'è un server a cui chiederlo.
 
-### 2. Crea un conto e registra i movimenti
+### 2. Crea il codice di sicurezza
+
+<p align="center">
+  <img src="docs/images/pin.png" width="240" alt="Codice di sicurezza">
+</p>
+
+Subito dopo, Vaultly ti chiede un **codice di 6 cifre**, da scrivere due volte. Non sono ammessi codici troppo facili come 111111 o 123456. **Da quel momento** all'apertura:
+
+1. scegli il tuo utente, oppure, se sul telefono ci sei solo tu, arrivi direttamente al tastierino;
+2. inserisci il codice e sei dentro.
+
+- **Hai dimenticato il codice?** Tocca **Ho dimenticato il codice · usa la password**: entri con la password e poi ne crei uno nuovo.
+- **Dopo 5 codici sbagliati** il codice si disattiva: accedi con la password e creane uno nuovo.
+- Per **cambiarlo**: **Altro → Codice di sicurezza**.
+- Per **aggiungere un'altra persona**: dalla schermata **Chi sei?** tocca **Nuovo utente**.
+
+### 3. Crea un conto e registra i movimenti
 
 Crea il primo conto con nome, valuta e saldo di oggi. Poi, per ogni spesa o entrata, tocca **+ Movimento**: importo, categoria, data ed eventuali etichette.
 
-### 3. Usa le etichette
+### 4. Usa le etichette
 
 <p align="center">
   <img src="docs/images/new-tag.png" width="240" alt="Nuova etichetta ricorrente">
@@ -148,7 +166,7 @@ Dalla sezione **Etichette** tocca **+ Etichetta**, oppure scrivi un nome nuovo m
 
 Il **tetto di spesa** è facoltativo. Tocca un'etichetta per vederne il dettaglio: per le ricorrenti c'è lo storico dei periodi passati, e toccando un periodo vedi le spese che contiene.
 
-### 4. Salva le tue password
+### 5. Salva le tue password
 
 <p align="center">
   <img src="docs/images/vault.png" width="240" alt="Password">
@@ -166,9 +184,9 @@ App [Flutter](https://flutter.dev) (Dart) pubblicata come app web progressiva (P
 | Cartella | Contenuto |
 | --- | --- |
 | `lib/core` | modelli, soldi, calcoli su saldo ed etichette, accesso, stato dell'app |
-| `lib/data` | cifratura (PBKDF2 + AES-256-GCM) e archivio locale (IndexedDB con sembast) |
+| `lib/data` | cifratura (PBKDF2 + AES-256-GCM), archivio locale (IndexedDB con sembast), chiavi del dispositivo per il codice |
 | `lib/ui` | schermate e pannelli |
-| `web` | pagina, manifest, icone, regole di sicurezza (CSP), `sw.js` per l'uso offline |
+| `web` | pagina, manifest, icone, regole di sicurezza (CSP), `sw.js` per l'uso offline, `device_key.js` (chiavi AES non estraibili del browser) |
 | `test` | test di calcoli, cifratura, dati e schermate |
 
 ```powershell

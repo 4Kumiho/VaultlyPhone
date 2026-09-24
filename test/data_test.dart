@@ -121,6 +121,88 @@ void main() {
     });
   });
 
+  group('Codice di sicurezza', () {
+    Future<Session> login(String name) async => (await auth.login(name, 'segreto1')).session!;
+
+    test('regole del codice', () {
+      expect(AuthService.pinProblem('12345'), isNotNull); // corto
+      expect(AuthService.pinProblem('12a456'), isNotNull);
+      expect(AuthService.pinProblem('111111'), isNotNull);
+      expect(AuthService.pinProblem('123456'), isNotNull);
+      expect(AuthService.pinProblem('987654'), isNotNull);
+      expect(AuthService.pinProblem('901234'), isNotNull); // in fila anche passando da 9 a 0
+      expect(AuthService.pinProblem('274913'), isNull);
+    });
+
+    test('si attiva e apre i dati come la password', () async {
+      final d = await registered();
+      await d.saveAccount(name: 'Conto', currency: 'EUR', initialBalance: 500);
+      final session = await login('mario');
+      expect(await auth.setPin(session, '274913', '274910'), 'I due codici non coincidono.');
+      expect(await auth.setPin(session, '274913', '274913'), isNull);
+      expect((await auth.users()).single.hasPin, isTrue);
+
+      final r = await auth.unlockWithPin('MARIO', '274913');
+      expect(r.error, isNull);
+      expect(AppData(auth, r.session!).accounts.single.initialBalance, 500);
+      // Nel record dell'utente il codice non c'è: solo byte cifrati.
+      final user = (await auth.users()).single;
+      expect(user.pinBlob!.length, greaterThan(32 + 16));
+      expect(String.fromCharCodes(user.pinBlob!).contains('274913'), isFalse);
+    });
+
+    test('dopo 5 errori si disattiva e serve la password', () async {
+      await registered();
+      await auth.setPin(await login('mario'), '274913', '274913');
+      for (var i = 1; i < AuthService.maxPinFailures; i++) {
+        final r = await auth.unlockWithPin('mario', '000001');
+        expect(r.session, isNull);
+        expect(r.pinDisabled, isFalse);
+        expect(r.error, contains(i == AuthService.maxPinFailures - 1 ? 'Ultimo tentativo' : 'Restano'));
+      }
+      final last = await auth.unlockWithPin('mario', '274913'.replaceFirst('2', '3'));
+      expect(last.pinDisabled, isTrue);
+      expect((await auth.users()).single.hasPin, isFalse);
+      // Anche il codice giusto ora non basta più.
+      expect((await auth.unlockWithPin('mario', '274913')).session, isNull);
+      expect((await auth.login('mario', 'segreto1')).session, isNotNull);
+    });
+
+    test('un codice giusto o la password azzerano gli errori', () async {
+      await registered();
+      await auth.setPin(await login('mario'), '274913', '274913');
+      await auth.unlockWithPin('mario', '000001');
+      await auth.unlockWithPin('mario', '000002');
+      expect((await auth.users()).single.pinFailures, 2);
+      expect((await auth.unlockWithPin('mario', '274913')).session, isNotNull);
+      expect((await auth.users()).single.pinFailures, 0);
+      await auth.unlockWithPin('mario', '000003');
+      await auth.login('mario', 'segreto1');
+      expect((await auth.users()).single.pinFailures, 0);
+    });
+
+    test('senza la chiave del dispositivo il codice non serve', () async {
+      await registered();
+      await auth.setPin(await login('mario'), '274913', '274913');
+      // Stesso archivio, altro "dispositivo": la chiave del browser non c'è.
+      final other = AuthService(store, crypto);
+      final r = await other.unlockWithPin('mario', '274913');
+      expect(r.session, isNull);
+      expect(r.pinDisabled, isTrue);
+    });
+
+    test('utenti separati, ognuno col suo codice', () async {
+      await registered('mario');
+      await registered('anna');
+      await auth.setPin(await login('mario'), '274913', '274913');
+      await auth.setPin(await login('anna'), '581736', '581736');
+      expect((await auth.users()).map((u) => u.username), ['mario', 'anna']);
+      expect((await auth.unlockWithPin('anna', '274913')).session, isNull);
+      expect((await auth.unlockWithPin('anna', '581736')).session!.user.username, 'anna');
+      expect((await auth.unlockWithPin('mario', '274913')).session!.user.username, 'mario');
+    });
+  });
+
   group('Dati', () {
     test('conti', () async {
       final d = await registered();

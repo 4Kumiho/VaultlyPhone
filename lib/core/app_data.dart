@@ -95,6 +95,10 @@ class AppData extends ChangeNotifier {
     return list.isEmpty ? List.of(kCurrencies) : list;
   }
 
+  // ---- Codice di sicurezza ---------------------------------------------------------------
+
+  Future<String?> changePin(String pin, String confirm) => _auth.setPin(_session, pin, confirm);
+
   // ---- Profilo -------------------------------------------------------------------------
 
   Future<String?> saveProfile({required String email, required String phoneCountry, required String phone}) async {
