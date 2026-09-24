@@ -133,9 +133,10 @@ void main() {
   testWidgets('pagina I tuoi dati', (tester) async {
     await pump(tester, const PrivacyScreen());
     expect(find.text('I tuoi dati restano sul tuo telefono'), findsOneWidget);
-    await tester.drag(find.byType(ListView), const Offset(0, -3000));
-    await tester.pumpAndSettle();
-    expect(find.text('Cosa devi sapere'), findsOneWidget);
+    for (final text in ['Per non perdere i dati', 'Cosa NON fare', 'Cosa puoi fare tranquillamente', 'Cosa devi sapere']) {
+      await tester.scrollUntilVisible(find.text(text), 300, scrollable: find.byType(Scrollable).first);
+      expect(find.text(text), findsOneWidget);
+    }
     expect(tester.takeException(), isNull);
   });
 

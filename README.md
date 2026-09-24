@@ -36,7 +36,15 @@ Tutto questo è spiegato anche dentro l'app, in **Altro → I tuoi dati → Magg
 
 ### Cosa devi sapere
 
-- **Non c'è recupero password e non c'è backup online.** È il prezzo della sicurezza: se dimentichi la password, i dati non si possono più aprire, neanche da chi ha fatto l'app. Se elimini l'icona di Vaultly o cambi telefono, i dati spariscono con lei.
+- **Non c'è recupero password e non c'è backup online.** È il prezzo della sicurezza: se dimentichi la password, i dati non si possono più aprire, neanche da chi ha fatto l'app.
+- **Per non perdere i dati**, che esistono solo sul telefono, **non fare** queste cose:
+  - ❌ eliminare l'icona di Vaultly dalla schermata Home: spostarla o metterla in una cartella invece va bene;
+  - ❌ in *Impostazioni → App → Safari*, usare "Cancella cronologia e dati dei siti web", oppure in *Avanzate → Dati dei siti web* usare "Rimuovi tutti i dati" o eliminare la voce `4kumiho.github.io`;
+  - ❌ inizializzare l'iPhone o passare a un telefono nuovo contando di ritrovare i dati: non c'è un backup, e non contare nemmeno su quello di iCloud;
+  - ❌ usare Vaultly in una pagina di navigazione privata.
+
+  Puoi invece fare tranquillamente queste cose: chiudere l'app, spegnere il telefono, aggiornare iOS o Vaultly, usarla offline, usare Safari per altri siti.
+  Apri Vaultly sempre dall'icona: se apri l'indirizzo in Safari vedi una Vaultly vuota, perché è uno spazio separato, ma i tuoi dati sono al sicuro nell'app dell'icona.
 - **I dati del telefono sono separati** da quelli di Vaultly per PC.
 - Due funzioni dell'iPhone, non di Vaultly, possono portare qualcosa fuori dal telefono:
   1. **Portachiavi iCloud.** Quando accedi o salvi una password, l'iPhone può chiederti se vuoi salvarla nel Portachiavi iCloud. Se vuoi che non esca dal telefono, rispondi **Non ora**.
