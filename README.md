@@ -10,6 +10,11 @@
 </p>
 
 <p align="center">
+  <a href="https://4kumiho.github.io/VaultlyPhone/"><img src="docs/images/qr.png" width="200" alt="Codice QR per aprire Vaultly"></a><br>
+  <sub>Inquadra il codice con la fotocamera del telefono per aprire Vaultly</sub>
+</p>
+
+<p align="center">
   <img src="docs/images/dashboard.png" width="240" alt="Conti e saldo">
   <img src="docs/images/tags.png" width="240" alt="Etichette">
   <img src="docs/images/tag-history.png" width="240" alt="Storico di un'etichetta">
@@ -54,7 +59,11 @@ Due funzioni dell'iPhone, non di Vaultly, possono però portare qualcosa fuori d
 
 **Serve:** un iPhone e **Safari**. Da altri browser su iPhone non si può aggiungere l'app alla schermata Home nel modo giusto.
 
-1. Apri **Safari** e vai su **https://4kumiho.github.io/VaultlyPhone/**
+1. Apri Vaultly in **Safari**: inquadra con la **Fotocamera** il codice QR qui sotto e tocca il link che compare, oppure scrivi **4kumiho.github.io/VaultlyPhone** (con V e P maiuscole).
+   Deve comparire la schermata scura di Vaultly con la scritta **"Bentornato"**. Se vedi la pagina bianca di GitHub, con file e testo, sei sulla pagina del codice: da lì l'icona aprirebbe GitHub, non l'app.
+
+   <img src="docs/images/qr.png" width="160" alt="Codice QR per aprire Vaultly">
+
 2. Tocca **•••** in basso a destra e poi **Condividi**. Sugli iPhone meno recenti tocca direttamente il pulsante Condividi, il quadrato con la freccia verso l'alto.
 3. Nel pannello che si apre **scorri verso il basso** oltre le icone delle app e tocca **Aggiungi alla schermata Home**. Se non c'è, tocca **Modifica azioni…** in fondo all'elenco e aggiungila con il **+** verde.
    Se compare l'opzione **Apri come app web**, lasciala attiva.
@@ -65,7 +74,7 @@ La prima apertura richiede internet, per scaricare l'app. Dopo funziona anche in
 
 ## Installazione su Android
 
-1. Apri **Chrome** e vai su **https://4kumiho.github.io/VaultlyPhone/**
+1. Apri **Chrome** e vai su **https://4kumiho.github.io/VaultlyPhone/**, oppure inquadra il codice QR qui sopra.
 2. Tocca **⋮** in alto a destra, poi **Aggiungi a schermata Home** (o **Installa app**) e conferma.
 3. Apri Vaultly dall'icona.
 
