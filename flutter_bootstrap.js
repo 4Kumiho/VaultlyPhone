@@ -48,6 +48,12 @@ for (const build of _flutter.buildConfig.builds) {
   if (build.mainJsPath) build.mainJsPath += "?v=" + (window.vaultlyLoadVersion || Date.now());
 }
 
+// Chiede al browser di tenere i dati di Vaultly anche quando il telefono ha poco spazio
+// (senza, il browser potrebbe cancellarli da solo per liberare memoria).
+if (navigator.storage && navigator.storage.persist) {
+  navigator.storage.persist().catch(() => {});
+}
+
 // Copia locale dei file dell'app, per aprirla anche senza internet (vedi sw.js).
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
