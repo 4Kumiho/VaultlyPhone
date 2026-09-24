@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,7 +10,9 @@ import 'package:vaultly_phone/core/auth_service.dart';
 import 'package:vaultly_phone/core/models.dart';
 import 'package:vaultly_phone/data/crypto.dart';
 import 'package:vaultly_phone/data/local_store.dart';
+import 'package:vaultly_phone/ui/account_screen.dart';
 import 'package:vaultly_phone/ui/app_shell.dart';
+import 'package:vaultly_phone/ui/avatar.dart';
 import 'package:vaultly_phone/ui/home_screen.dart';
 import 'package:vaultly_phone/ui/sheets/account_sheet.dart';
 import 'package:vaultly_phone/ui/sheets/profile_sheet.dart';
@@ -97,6 +101,32 @@ void main() {
       Navigator.of(tester.element(find.text(title))).pop();
       await tester.pumpAndSettle();
     }
+  });
+
+  testWidgets('il tuo account, con e senza foto', (tester) async {
+    await pump(tester, const AccountScreen());
+    expect(find.text('Il tuo account'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('avatar-color-2')));
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 200)));
+    await tester.pumpAndSettle();
+    expect(data.avatarColorIndex, 2);
+
+    // Una foto vera (PNG 600x400) ritagliata a quadrato.
+    final png = await tester.runAsync(() async {
+      final recorder = ui.PictureRecorder();
+      Canvas(recorder).drawRect(const Rect.fromLTWH(0, 0, 600, 400), Paint()..color = const Color(0xFF3366FF));
+      final image = await recorder.endRecording().toImage(600, 400);
+      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+      final square = await squareAvatar(bytes!.buffer.asUint8List());
+      final decoded = await (await ui.instantiateImageCodec(square!)).getNextFrame();
+      expect((decoded.image.width, decoded.image.height), (avatarPixels, avatarPixels));
+      await data.saveAvatar(square);
+      return square;
+    });
+    expect(png, isNotNull);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('avatar-color-2')), findsNothing); // con la foto niente colori
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('pannelli', (tester) async {

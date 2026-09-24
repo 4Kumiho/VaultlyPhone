@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vaultly_phone/core/analytics.dart';
@@ -118,6 +119,64 @@ void main() {
       expect(anna.accounts, isEmpty);
       final marioAgain = AppData(auth, (await auth.login('mario', 'segreto1')).session!);
       expect(marioAgain.accounts.single.name, 'Conto di Mario');
+    });
+  });
+
+  group('Account', () {
+    test('cambio username: unico, e si accede col nuovo', () async {
+      final mario = await registered('mario');
+      await registered('anna');
+      expect(await mario.rename('  '), isNotNull);
+      expect(await mario.rename('ANNA'), 'Username già in uso.');
+      expect(await mario.rename('Mario Rossi'), isNull);
+      expect(mario.username, 'Mario Rossi');
+      expect((await auth.login('mario rossi', 'segreto1')).session, isNotNull);
+      expect((await auth.login('mario', 'segreto1')).session, isNull);
+    });
+
+    test('cambio password: dati cifrati di nuovo, il codice va rifatto', () async {
+      final d = await registered();
+      await d.saveAccount(name: 'Conto', currency: 'EUR', initialBalance: 700);
+      expect(await d.changePin('274913', '274913'), isNull);
+      expect(d.hasPin, isTrue);
+      expect(await d.changePassword('sbagliata', 'nuovapass', 'nuovapass'), 'La password attuale non è corretta.');
+      expect(await d.changePassword('segreto1', 'corta', 'corta'), isNotNull);
+      expect(await d.changePassword('segreto1', 'nuovapass', 'altra'), isNotNull);
+      expect(await d.changePassword('segreto1', 'nuovapass', 'nuovapass'), isNull);
+      expect(d.hasPin, isFalse);
+      expect((await auth.login('mario', 'segreto1')).session, isNull);
+      final again = AppData(auth, (await auth.login('mario', 'nuovapass')).session!);
+      expect(again.accounts.single.initialBalance, 700);
+      // I salvataggi dopo il cambio usano la chiave nuova.
+      await d.saveAccount(name: 'Carta', currency: 'EUR', initialBalance: 1);
+      expect(AppData(auth, (await auth.login('mario', 'nuovapass')).session!).accounts.length, 2);
+      expect((await auth.unlockWithPin('mario', '274913')).session, isNull);
+    });
+
+    test('eliminazione: serve la password, poi l\'utente sparisce', () async {
+      final d = await registered('mario');
+      await registered('anna');
+      expect(await d.deleteUser('sbagliata'), isNotNull);
+      expect(await d.deleteUser('segreto1'), isNull);
+      expect((await auth.users()).map((u) => u.username), ['anna']);
+      expect((await auth.login('mario', 'segreto1')).session, isNull);
+      // Lo username torna libero.
+      expect((await auth.register(username: 'mario', email: 'm@esempio.it', phone: '3331234567', password: 'segreto1', confirm: 'segreto1')).session, isNotNull);
+    });
+
+    test('foto e colore dell\'avatar: salvati, cifrati, rimovibili', () async {
+      final d = await registered();
+      final photo = Uint8List.fromList(List.generate(3000, (i) => (i * 7) % 256));
+      expect(await d.saveAvatar(Uint8List(500 * 1024)), isNotNull); // troppo grande
+      expect(await d.saveAvatar(photo), isNull);
+      expect(await d.setAvatarColor(3), isNull);
+      final again = AppData(auth, (await auth.login('mario', 'segreto1')).session!);
+      expect(again.avatar, photo);
+      expect(again.avatarColorIndex, 3);
+      final stored = (await auth.users()).single.data!;
+      expect(String.fromCharCodes(stored).contains(base64Encode(photo).substring(0, 40)), isFalse);
+      expect(await again.saveAvatar(null), isNull);
+      expect(AppData(auth, (await auth.login('mario', 'segreto1')).session!).avatar, isNull);
     });
   });
 

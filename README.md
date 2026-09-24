@@ -17,7 +17,7 @@
 
 - Vaultly è un'**app web**: si scarica da un indirizzo internet, come una pagina, ma poi funziona come un'app.
 - Da internet arriva **solo l'app**: il codice, i caratteri e le icone. Sono gli stessi file per tutti e non contengono niente di tuo.
-- **I dati che inserisci** vengono salvati nella **memoria interna del telefono**, nello spazio riservato all'app (il database del browser, IndexedDB). Non vengono mai spediti da nessuna parte.
+- **I dati che inserisci**, compresa la foto del profilo, vengono salvati nella **memoria interna del telefono**, nello spazio riservato all'app (il database del browser, IndexedDB). Non vengono mai spediti da nessuna parte.
 - Dopo la prima apertura Vaultly **funziona anche senza internet**, in aereo o senza campo: la prova che i tuoi dati non hanno bisogno di andare online.
 
 ### Perché è sicura
@@ -72,6 +72,7 @@
   - **Ricorrenti**, per esempio *"autostrada"*. Ricominciano da zero ogni giorno, ogni N giorni, ogni settimana, ogni mese o ogni anno. Per ognuna vedi quanto hai speso nei periodi precedenti, con grafico e media.
   - Per ogni etichetta puoi mettere un **tetto di spesa**. Vaultly ti avvisa quando arrivi all'80% e quando lo superi.
 - **Password**: login e password dei tuoi account, cifrati, con un generatore di password sicure. Quando copi una password, Vaultly prova a cancellarla dagli appunti dopo 30 secondi.
+- **Il tuo account**: la tua foto come avatar (oppure l'iniziale su un colore a scelta), username, email, telefono, password e codice, tutto modificabile.
 - **Accesso veloce con un codice di 6 cifre**: la password serve solo la prima volta. Poi scegli il tuo utente e inserisci il codice.
 - **Più persone sullo stesso telefono**: ognuno ha il suo utente, il suo codice e vede solo i suoi dati.
 - **Funziona senza internet**: basta averla aperta una volta con la connessione.
@@ -166,7 +167,21 @@ Dalla sezione **Etichette** tocca **+ Etichetta**, oppure scrivi un nome nuovo m
 
 Il **tetto di spesa** è facoltativo. Tocca un'etichetta per vederne il dettaglio: per le ricorrenti c'è lo storico dei periodi passati, e toccando un periodo vedi le spese che contiene.
 
-### 5. Salva le tue password
+### 5. Il tuo account
+
+<p align="center">
+  <img src="docs/images/account.png" width="240" alt="Il tuo account">
+</p>
+
+Tocca la tua foto in alto a destra, oppure **Altro → il tuo nome**. Da qui puoi:
+
+- **mettere una tua foto**: tocca l'avatar → **Scegli una foto**. Puoi prenderla dalla galleria o scattarla al momento. Viene ritagliata quadrata al centro, puoi ruotarla, ed è salvata **cifrata** solo sul telefono. Senza foto puoi scegliere il colore dell'avatar con l'iniziale;
+- cambiare **username**, **email** e **telefono**;
+- cambiare la **password**: poi ti viene chiesto di creare di nuovo il codice di sicurezza;
+- cambiare il **codice di sicurezza**;
+- **eliminare l'account**: serve la password, e vengono cancellati dal telefono l'utente e tutti i suoi dati.
+
+### 6. Salva le tue password
 
 <p align="center">
   <img src="docs/images/vault.png" width="240" alt="Password">

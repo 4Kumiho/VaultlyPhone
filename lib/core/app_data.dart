@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -26,10 +27,24 @@ class AppData extends ChangeNotifier {
   static const maxTagLength = 30;
 
   final AuthService _auth;
+
+  /// Uscita dall'app (impostata da AppShell), es. dopo l'eliminazione dell'utente.
+  VoidCallback? signOut;
   final Session _session;
   final _random = Random.secure();
 
   String get username => _session.user.username;
+  DateTime get createdAt => _session.user.createdAt;
+  bool get hasPin => _session.user.hasPin;
+
+  /// Foto dell'avatar (PNG quadrato), o null se si usa l'iniziale.
+  Uint8List? get avatar {
+    final a = _d.profile.avatar;
+    return a == null ? null : base64Decode(a);
+  }
+
+  int get avatarColorIndex => _d.profile.avatarColor.clamp(0, kAvatarColors.length - 1);
+  int get avatarColor => kAvatarColors[avatarColorIndex];
   String get email => _d.profile.email;
   String get phoneCountry => _d.profile.phoneCountry;
   String get phone => _d.profile.phone; // senza prefisso
@@ -94,6 +109,35 @@ class AppData extends ChangeNotifier {
     final list = kCurrencies.where((c) => codes.contains(c.code)).toList();
     return list.isEmpty ? List.of(kCurrencies) : list;
   }
+
+  // ---- Account ------------------------------------------------------------------------
+
+  /// Foto già ritagliata e ridotta (vedi ui/avatar.dart); null per toglierla.
+  Future<String?> saveAvatar(Uint8List? png) {
+    if (png != null && png.length > 400 * 1024) return Future.value('La foto è troppo grande.');
+    _d.profile.avatar = png == null ? null : base64Encode(png);
+    return _commit();
+  }
+
+  Future<String?> setAvatarColor(int index) {
+    _d.profile.avatarColor = index.clamp(0, kAvatarColors.length - 1);
+    return _commit();
+  }
+
+  Future<String?> rename(String username) async {
+    final error = await _auth.rename(_session, username);
+    if (error == null) notifyListeners();
+    return error;
+  }
+
+  Future<String?> changePassword(String current, String password, String confirm) async {
+    final error = await _auth.changePassword(_session, current, password, confirm);
+    if (error == null) notifyListeners();
+    return error;
+  }
+
+  /// Elimina questo utente e tutti i suoi dati dal telefono.
+  Future<String?> deleteUser(String password) => _auth.deleteAccount(_session, password);
 
   // ---- Codice di sicurezza ---------------------------------------------------------------
 

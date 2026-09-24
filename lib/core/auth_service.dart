@@ -8,7 +8,7 @@ import 'models.dart';
 class Session {
   Session(this.user, this.key, this.data);
   final UserRecord user;
-  final List<int> key;
+  List<int> key; // cambia se cambia la password
   final UserData data;
 }
 
@@ -115,6 +115,60 @@ class AuthService {
       await _store.savePin(user);
     }
     return AuthResult.ok(Session(user, key, UserData.fromJson(json)));
+  }
+
+  // ---- Account --------------------------------------------------------------------------
+
+  static const maxUsernameLength = 30;
+
+  /// Cambia lo username (quello con cui si sceglie l'utente e si accede).
+  Future<String?> rename(Session session, String username) async {
+    final name = username.trim();
+    if (name.isEmpty) return 'Inserisci uno username.';
+    if (name.length > maxUsernameLength) return 'Lo username può avere al massimo $maxUsernameLength caratteri.';
+    final other = await _store.findUser(name);
+    if (other != null && other.id != session.user.id) return 'Username già in uso.';
+    session.user.username = name;
+    await _store.updateUser(session.user);
+    return null;
+  }
+
+  Future<bool> _passwordMatches(UserRecord user, String password) async {
+    final hash = await VaultCrypto(iterations: user.iterations).deriveKey(password, user.salt);
+    return VaultCrypto.constantTimeEquals(hash, user.passwordHash);
+  }
+
+  /// Cambia la password: nuova chiave e dati cifrati di nuovo. Il codice di sicurezza era legato
+  /// alla chiave vecchia, quindi viene tolto e va creato di nuovo.
+  Future<String?> changePassword(Session session, String current, String password, String confirm) async {
+    final user = session.user;
+    if (!await _passwordMatches(user, current)) return 'La password attuale non è corretta.';
+    if (password.length < minPasswordLength) return 'La nuova password deve avere almeno $minPasswordLength caratteri.';
+    if (password != confirm) return 'Le nuove password non coincidono.';
+    final salt = _crypto.randomBytes(_saltBytes);
+    final dataSalt = _crypto.randomBytes(_saltBytes);
+    final key = await _crypto.deriveKey(password, dataSalt);
+    user
+      ..salt = salt
+      ..dataSalt = dataSalt
+      ..iterations = _crypto.iterations
+      ..passwordHash = await _crypto.deriveKey(password, salt)
+      ..data = await _crypto.encryptJson(key, session.data.toJson())
+      ..pinSalt = null
+      ..pinBlob = null
+      ..pinFailures = 0;
+    session.key = key;
+    await _device.remove(_deviceId(user));
+    await _store.updateUser(user);
+    return null;
+  }
+
+  /// Elimina l'utente e tutti i suoi dati da questo telefono (serve la password).
+  Future<String?> deleteAccount(Session session, String password) async {
+    if (!await _passwordMatches(session.user, password)) return 'La password non è corretta.';
+    await _device.remove(_deviceId(session.user));
+    await _store.deleteUser(session.user.id);
+    return null;
   }
 
   // ---- Codice di sicurezza -------------------------------------------------------------

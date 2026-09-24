@@ -297,19 +297,32 @@ class VaultItem {
 
 /// Contatti dell'utente. Stanno dentro i dati cifrati: senza la password non si leggono.
 class UserProfile {
-  UserProfile({this.email = '', this.phoneCountry = 'IT', this.phone = ''});
+  UserProfile({this.email = '', this.phoneCountry = 'IT', this.phone = '', this.avatar, this.avatarColor = 0});
   String email;
   String phoneCountry; // ISO del paese del prefisso (il +1 è di più paesi)
   String phone; // numero senza prefisso, solo cifre
+  String? avatar; // foto quadrata PNG in base64 (cifrata con il resto dei dati)
+  int avatarColor; // colore dell'avatar con l'iniziale, indice in kAvatarColors
 
-  Map<String, dynamic> toJson() => {'email': email, 'phoneCountry': phoneCountry, 'phone': phone};
+  Map<String, dynamic> toJson() => {
+        'email': email,
+        'phoneCountry': phoneCountry,
+        'phone': phone,
+        'avatar': avatar,
+        'avatarColor': avatarColor,
+      };
 
   factory UserProfile.fromJson(Map<String, dynamic>? j) => UserProfile(
         email: (j?['email'] as String?) ?? '',
         phoneCountry: (j?['phoneCountry'] as String?) ?? 'IT',
         phone: (j?['phone'] as String?) ?? '',
+        avatar: j?['avatar'] as String?,
+        avatarColor: (j?['avatarColor'] as int?) ?? 0,
       );
 }
+
+/// Colori per l'avatar con l'iniziale (ARGB).
+const kAvatarColors = [0xFF5B8CFF, 0xFF34D399, 0xFFF5A524, 0xFFFF6B6B, 0xFFB57BFF, 0xFF2EC5CE, 0xFFFF8FC7, 0xFF8B93A7];
 
 /// Tutti i dati di un utente: vengono salvati insieme, cifrati con la sua chiave.
 class UserData {

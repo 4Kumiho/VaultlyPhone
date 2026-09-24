@@ -19,11 +19,11 @@ class UserRecord {
   });
 
   int id;
-  final String username;
-  final List<int> passwordHash;
-  final List<int> salt;
-  final List<int> dataSalt; // salt della chiave dei dati, diverso da quello del login
-  final int iterations;
+  String username;
+  List<int> passwordHash;
+  List<int> salt;
+  List<int> dataSalt; // salt della chiave dei dati, diverso da quello del login
+  int iterations;
   final DateTime createdAt;
   List<int>? data;
 
@@ -92,6 +92,11 @@ class LocalStore {
     final records = await _users.find(_db, finder: Finder(sortOrders: [SortOrder(Field.key)]));
     return [for (final r in records) UserRecord.fromMap(r.key, r.value)];
   }
+
+  /// Riscrive tutto il record (nome, password, dati, codice).
+  Future<void> updateUser(UserRecord user) => _users.record(user.id).put(_db, user.toMap());
+
+  Future<void> deleteUser(int id) => _users.record(id).delete(_db);
 
   Future<void> savePin(UserRecord user) => _users.record(user.id).update(_db, {
         'pinSalt': user.pinSalt,

@@ -5,6 +5,8 @@ import '../core/analytics.dart';
 import '../core/app_data.dart';
 import '../core/models.dart';
 import '../core/money.dart';
+import 'account_screen.dart';
+import 'avatar.dart';
 import 'balance_chart.dart';
 import 'format.dart';
 import 'home_screen.dart';
@@ -59,7 +61,7 @@ class _AccountsTabState extends State<AccountsTab> {
         bottom: false,
         child: CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(child: _Header(username: data.username)),
+            SliverToBoxAdapter(child: _Header(data: data)),
             SliverToBoxAdapter(
               child: _AccountStrip(
                 data: data,
@@ -170,16 +172,25 @@ class _AccountsTabState extends State<AccountsTab> {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.username});
-  final String username;
+  const _Header({required this.data});
+  final AppData data;
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 14),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Ciao, $username', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 2),
-          Muted(longDate(DateTime.now())),
+        padding: const EdgeInsets.fromLTRB(20, 18, 16, 14),
+        child: Row(children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Ciao, ${data.username}',
+                  overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 2),
+              Muted(longDate(DateTime.now())),
+            ]),
+          ),
+          GestureDetector(
+            onTap: () => AccountScreen.open(context),
+            child: UserAvatar(name: data.username, photo: data.avatar, color: data.avatarColor, size: 46),
+          ),
         ]),
       );
 }

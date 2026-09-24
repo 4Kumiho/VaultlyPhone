@@ -76,7 +76,7 @@ class _AppShellState extends State<AppShell> {
 
   void _signedIn(Session session) => setState(() {
         if (session.user.hasPin) {
-          _data = AppData(_auth, session);
+          _data = AppData(_auth, session)..signOut = _start;
           _stage = _Stage.home;
         } else {
           _session = session;
@@ -120,7 +120,7 @@ class _AppShellState extends State<AppShell> {
           key: const ValueKey('setup'),
           save: (pin, confirm) => _auth.setPin(_session!, pin, confirm),
           onDone: () => setState(() {
-            _data = AppData(_auth, _session!);
+            _data = AppData(_auth, _session!)..signOut = _start;
             _session = null;
             _stage = _Stage.home;
           }),
