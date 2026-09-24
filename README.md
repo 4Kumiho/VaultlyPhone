@@ -9,13 +9,47 @@
   <a href="https://4kumiho.github.io/VaultlyPhone/"><b>📱 Apri Vaultly: https://4kumiho.github.io/VaultlyPhone/</b></a>
 </p>
 
+## Dove vengono salvati i tuoi dati, e perché è sicura
+
+**Tutto quello che scrivi in Vaultly resta sul tuo telefono**: profilo, conti, movimenti, etichette e password. Vaultly non ha un server e non ha account online. Nessuno, nemmeno chi ha scritto l'app, può vedere i tuoi dati.
+
+### Dove finiscono i dati
+
+- Vaultly è un'**app web**: si scarica da un indirizzo internet, come una pagina, ma poi funziona come un'app.
+- Da internet arriva **solo l'app**: il codice, i caratteri e le icone. Sono gli stessi file per tutti e non contengono niente di tuo.
+- **I dati che inserisci** vengono salvati nella **memoria interna del telefono**, nello spazio riservato all'app (il database del browser, IndexedDB). Non vengono mai spediti da nessuna parte.
+- Dopo la prima apertura Vaultly **funziona anche senza internet**, in aereo o senza campo: la prova che i tuoi dati non hanno bisogno di andare online.
+
+### Perché è sicura
+
+1. **È tutto cifrato.** Prima di essere salvati, i dati vengono cifrati con **AES-256**, lo stesso sistema usato da banche e governi. La chiave nasce dalla tua password (PBKDF2, 100.000 passaggi) e **non viene salvata da nessuna parte**. Sul telefono resta in chiaro solo il tuo **username**; il resto, senza la password, sono byte illeggibili.
+2. **Non può parlare con altri siti.** La pagina contiene una regola di sicurezza del browser (*Content-Security-Policy*) che **vieta qualsiasi collegamento esterno**. Anche se nel codice ci fosse un errore, il browser bloccherebbe l'invio.
+3. **Nessuna pubblicità, nessuna statistica, nessun tracciamento.** Non ci sono servizi di terze parti: niente Google Analytics, niente Facebook, niente cookie.
+4. **Il codice è pubblico**, qui su GitHub: chiunque può leggerlo e controllare che faccia davvero quello che è scritto qui.
+5. **È stato verificato.** Durante lo sviluppo l'app è stata usata in tutte le sue funzioni registrando ogni richiesta di rete:
+   - **zero** richieste verso altri siti, **zero** dati inviati;
+   - nella memoria del telefono nessuno dei dati inseriti (nomi dei conti, importi, email, telefono, password) compare in chiaro.
+6. **Ognuno vede solo i suoi dati.** Se sullo stesso telefono ci sono più utenti, ciascuno ha la sua password e i suoi dati cifrati con la sua chiave.
+
+### Cosa devi sapere
+
+- **Non c'è recupero password e non c'è backup online.** È il prezzo della sicurezza: se dimentichi la password, i dati non si possono più aprire, neanche da chi ha fatto l'app. Se elimini l'icona di Vaultly o cambi telefono, i dati spariscono con lei.
+- **I dati del telefono sono separati** da quelli di Vaultly per PC.
+- Due funzioni dell'iPhone, non di Vaultly, possono portare qualcosa fuori dal telefono:
+  1. **Portachiavi iCloud.** Quando accedi o salvi una password, l'iPhone può chiederti se vuoi salvarla nel Portachiavi iCloud. Se vuoi che non esca dal telefono, rispondi **Non ora**.
+  2. **Appunti condivisi.** Se hai un Mac o un iPad con lo stesso Apple ID e *Handoff* attivo, una password che copi può comparire anche lì. Vaultly prova a cancellarla dagli appunti dopo 30 secondi.
+
+---
+
+## Apri Vaultly
+
 <p align="center">
   <a href="https://4kumiho.github.io/VaultlyPhone/"><img src="docs/images/qr.png" width="200" alt="Codice QR per aprire Vaultly"></a>
 </p>
 
 > **Come aprire Vaultly sul telefono**
 > - **Stai leggendo questa pagina sul PC?** Apri la **Fotocamera** del telefono, inquadra il codice QR qui sopra sullo schermo del PC e tocca il link che compare (**4kumiho.github.io**).
-> - **Stai leggendo questa pagina sul telefono?** Il QR non serve: tocca il link blu **📱 Apri Vaultly** qui sopra.
+> - **Stai leggendo questa pagina sul telefono?** Il QR non serve: tocca il link blu **[📱 Apri Vaultly](https://4kumiho.github.io/VaultlyPhone/)**.
 >
 > Poi segui i passaggi di [installazione su iPhone](#installazione-su-iphone) o [su Android](#installazione-su-android).
 
@@ -39,24 +73,6 @@
 - **Password**: login e password dei tuoi account, cifrati, con un generatore di password sicure. Quando copi una password, Vaultly prova a cancellarla dagli appunti dopo 30 secondi.
 - **Più persone sullo stesso telefono**: ognuno ha il suo utente e vede solo i suoi dati.
 - **Funziona senza internet**: basta averla aperta una volta con la connessione.
-
----
-
-## I tuoi dati restano sul telefono
-
-Vaultly è una "app web": la scarichi da un indirizzo internet, ma **tutto quello che scrivi resta nella memoria del telefono**.
-
-- **Nessun server, nessun account online.** L'app non invia a nessuno i tuoi dati: profilo, conti, movimenti, etichette e password. Internet serve solo a scaricare l'app, cioè il codice, i caratteri e le icone.
-- **Tutto è cifrato** (AES-256) con una chiave che nasce dalla tua password. Sul telefono resta in chiaro solo il tuo **username**. Senza la password, il resto sono byte illeggibili.
-- **L'app non può collegarsi ad altri siti.** Una regola di sicurezza del browser (Content-Security-Policy) blocca qualsiasi collegamento esterno, anche se ci fosse un errore nel codice.
-- **Il codice è pubblico**, qui su GitHub: chiunque può controllarlo.
-
-Due funzioni dell'iPhone, non di Vaultly, possono però portare qualcosa fuori dal telefono:
-
-1. **Salvare la password nel Portachiavi.** Quando accedi o salvi una password in Vaultly, l'iPhone può chiederti se vuoi salvarla nel Portachiavi iCloud. Se vuoi che non esca dal telefono, rispondi **Non ora**.
-2. **Appunti condivisi.** Se hai un Mac o un iPad con lo stesso Apple ID e *Handoff* attivo, una password che copi può comparire anche lì. Vaultly prova a cancellarla dagli appunti dopo 30 secondi.
-
-> ⚠️ **Non c'è recupero password e non c'è backup online.** Se dimentichi la password, i tuoi dati non si possono più aprire. Se elimini l'icona di Vaultly o cambi telefono, i dati spariscono con lei. I dati del telefono sono separati da quelli di Vaultly per PC.
 
 ---
 
